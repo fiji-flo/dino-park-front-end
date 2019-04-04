@@ -76,9 +76,6 @@
           </template>
         </ShowMore>
       </template>
-      <template v-else>
-        …
-      </template>
     </div>
     <SearchForm
       modifier="search-form--small hide-desktop"

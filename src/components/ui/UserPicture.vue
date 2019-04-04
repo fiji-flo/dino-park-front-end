@@ -54,8 +54,13 @@ export default {
   },
   asyncComputed: {
     async src() {
-      this.decidePictureCategory(this.size);
-      return this.updateUserPicture();
+      try {
+        this.decidePictureCategory(this.size);
+        return this.updateUserPicture();
+      } catch (e) {
+        console.error(e);
+        return Promise.resolve(this.identiconWith('dino', this.size || 264));
+      }
     },
   },
   methods: {
@@ -78,13 +83,16 @@ export default {
           hash =
             '04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb'; // 'user'
         }
-        const identicon = new Identicon(hash, {
-          size: this.size,
-          format: 'svg',
-        });
-        return `data:image/svg+xml;base64,${identicon.toString()}`;
+        return this.identiconWith(hash, this.size);
       }
       return `${this.picture}?size=${this.slot}`;
+    },
+    identiconWith(input, size) {
+      const identicon = new Identicon(input, {
+        size,
+        format: 'svg',
+      });
+      return `data:image/svg+xml;base64,${identicon.toString()}`;
     },
     decidePictureCategory(size) {
       if (size <= 40) {
