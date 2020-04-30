@@ -1,17 +1,20 @@
 <template>
   <div class="input">
     <input
+      :class="{ ['input--w-error']: Boolean(errorMsg) }"
       :type="type"
       :min="min"
       :id="id"
       :placeholder="placeholder"
       :maxlength="maxlength"
+      :pattern="pattern"
       :value="value"
+      :required="required"
       @input="$emit('input', $event.target.value)"
       @focus="handleInputFocus"
-      @keypress="handleInputKeyPress"
     />
     <span v-if="maxlength">{{ value.length }}/{{ maxlength }}</span>
+    <span v-if="errorMsg" class="input__error-msg">{{ errorMsg }}</span>
   </div>
 </template>
 
@@ -34,26 +37,19 @@ export default {
       type: Number,
       default: null,
     },
+    errorMsg: {
+      type: String,
+      default: '',
+    },
+    pattern: {
+      type: String,
+      default: '.*',
+    },
+    required: Boolean,
   },
   methods: {
     handleInputFocus() {
       this.$emit('focus');
-    },
-    handleInputKeyPress(e) {
-      // Check if type is number
-      if (this.type === 'number') {
-        // Since we know this is a number, just concat the keycode onto the current value to check the new value
-        const pressed = parseInt(
-          `${e.target.value}${String.fromCharCode(e.keyCode)}`,
-        );
-        // Confirm the value is still appropriate
-        if (e.which < 48 || e.which > 57 || pressed < this.min) {
-          e.preventDefault();
-          return;
-        } else {
-          this.$emit('keypress', e);
-        }
-      }
     },
   },
 };
@@ -85,9 +81,25 @@ export default {
 .input input[maxlength] + span {
   position: absolute;
   right: 1em;
-  top: 50%;
-  transform: translate(0, -50%);
+  top: 0.5em;
   color: var(--gray-50);
   letter-spacing: 0.1em;
+}
+
+input.input--w-error ~ .input__error-msg {
+  color: var(--neon-red);
+  padding: 0em 1em;
+  font-size: small;
+  display: inline-block;
+}
+input:focus:invalid.input--w-error ~ .input__error-msg,
+input:valid.input--w-error ~ .input__error-msg {
+  display: none;
+}
+input:invalid:not(focus).input--w-error ~ .input__error-msg {
+  display: inline-block;
+}
+input:invalid:not(focus).input--w-error {
+  border-color: var(--neon-red);
 }
 </style>

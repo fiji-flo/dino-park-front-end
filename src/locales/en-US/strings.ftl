@@ -553,3 +553,9 @@ date-week = week
   .plural = weeks
 date-day = day
   .plural = days
+
+ag_errors = Something is wrong :/
+  .number_gt_0 = x > 0
+ag_api_errors = Something went wrong :/
+ .invalid_group_name = Group name must be longer then 3 and only contain lowercase characters a-z, _, - or digits 0-9.
+ .group_name_exists = Group name already exists
