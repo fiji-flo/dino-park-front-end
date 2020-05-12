@@ -32,7 +32,7 @@
         <IconBlockList class="icon-block-list--multi-col">
           <IconBlock
             v-for="[group] in Object.entries(
-              initialAccessInformation.ldap.values
+              initialAccessInformation.ldap.values,
             )"
             :key="`group-${group}`"
             icon="idcard"
@@ -66,12 +66,12 @@
         class="icon-block-list--multi-col"
       >
         <IconBlock
-          v-for="[group] in mozilliansorgGroups"
+          v-for="[group, isPmo] in mozilliansorgGroups"
           :key="`group-${group}`"
           icon="moz"
         >
           <RouterLink
-            v-if="getFeature('accessGroupsToggle')"
+            v-if="getFeature('accessGroupsToggle') && isPmo !== null"
             target="_blank"
             :to="{
               path: `/a/${encodeURIComponent(group)}`,
@@ -87,19 +87,6 @@
       </IconBlockList>
       <p v-else>{{ fluent('profile_access-groups_mozillians', 'none') }}</p>
       <div class="access-information__actions">
-        <RouterLink
-          id="access-information__create-link"
-          class="button button--secondary button--action"
-          :to="{
-            name: 'Create Access Group',
-          }"
-          rel="noreferrer noopener"
-          v-if="getFeature('accessGroupsToggle') && showEditAccessGroups"
-        >
-          <Icon id="plus" :width="18" :height="18" />{{
-            fluent('profile_access-groups_mozillians', 'create-access-groups')
-          }}
-        </RouterLink>
         <a
           id="access-information__external-link"
           class="button button--secondary button--action"
