@@ -17,29 +17,17 @@
           :height="16"
         />
       </div>
-      <input
+      <Combobox
+        id="field-location"
         class="tag-selector__value"
-        type="text"
         v-model="currentInput"
-        @change="onSelectorInput"
         @input="onInput"
-        @blur="onInputBlur"
-      />
-    </div>
-    <ul class="selector-auto-complete" v-if="autoCompleteList.length > 0">
-      <li
-        class="selector-auto-complete__item"
-        v-for="(item, idx) in autoCompleteList"
-        :key="idx"
-        @click="handleAddItem(item)"
+        :filter="'none'"
+        :source="autoCompleteList"
+        :onSelect="handleAddItem"
       >
-        <AccessGroupMemberListDisplay
-          class="selector-auto-complete__item"
-          :member="item"
-          :subRowText="subRowTextDisplay"
-        />
-      </li>
-    </ul>
+      </Combobox>
+    </div>
   </div>
 </template>
 
@@ -63,6 +51,7 @@ export default {
     },
   },
   components: {
+    Combobox: () => import('@/components/ui/Combobox.vue'),
     Icon,
     AccessGroupMemberListDisplay,
   },
@@ -112,14 +101,14 @@ export default {
       this.tagsDisplay.splice(idx, 1);
       this.$emit('input', this.tagsDisplay);
     },
-    onInput: throttle(function (e) {
-      if (!e || e.target.value === '') {
-        if (e.target.value === '') {
+    onInput: throttle(function (query) {
+      if (query === '') {
+        if (query === '') {
           this.autoCompleteList = [];
         }
         return;
       }
-      this.updateAutoComplete(e.target.value).then((members) => {
+      this.updateAutoComplete(query).then((members) => {
         this.autoCompleteList = members;
       });
     }, 1000),
